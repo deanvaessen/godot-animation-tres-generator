@@ -7,7 +7,7 @@ import { Writer } from "./writer";
 function prepareFs( output ) {
 
     return fs.ensureDir( output ).
-        then( fs.remove( "animation.tres" ) );
+        then( fs.remove( output + "/animation.tres" ) );
 }
 
 
@@ -20,5 +20,6 @@ export function main() {
     prepareFs( output )
         .then( () => parser.buildIndex( input ) )
         .then( writer.generateTres )
+        .then( () => console.log( "'t was a pleasure, good chap!" ) )
         .catch( err => console.warn( err ) );
 }

@@ -18,11 +18,13 @@ const buildHeader = ( godotResPath, files ) => {
     ];
 };
 
+const getFrame = name => Number( name.split( "_" ).pop() );
+const sortAnimations = animations => animations.sort( ( a, b ) => getFrame( a.name ) - getFrame( b.name  ) );
 const buildAnimationDefinition = ( summary ) => {
     let totalAnimationSets = [];
 
     for ( const animation of summary ) {
-        const { name, path, animations } = animation;
+        const { animations } = animation;
 
         totalAnimationSets = totalAnimationSets.concat( animations );
     }
@@ -35,7 +37,7 @@ const buildAnimationDefinition = ( summary ) => {
             return [
                 "{",
                 "\"frames\" : [",
-                ...animations.map( ( animation, i ) => {
+                ...sortAnimations( animations ).map( ( animation, i ) => {
                     const isLast = i === animations.length - 1;
 
                     return `ExtResource( ${animation.i + 1} ) ${!isLast ? "," : ""}`;
@@ -68,14 +70,14 @@ export class Writer {
     }
 
     generateTres = ( index ) => {
-        const { summary, files, orientations, animations, animationsPerOrientation } = index;
+        const { summary, files } = index;
         const sections = [
             ...buildHeader( this.godotResPath, files ),
             ...buildBody( summary )
         ];
 
-        const stream = fs.createWriteStream( "animation.tres", { flags : "a" } );
-        sections.forEach( function ( item,index ) {
+        const stream = fs.createWriteStream( this.output + "/animation.tres", { flags : "a" } );
+        sections.forEach( ( item, index ) => {
             stream.write( item + "\n" );
         } );
         stream.end();
