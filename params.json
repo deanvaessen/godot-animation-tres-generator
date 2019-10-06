@@ -1,0 +1,5 @@
+{
+    "input": "./input",
+    "output": "./output",
+    "godotResPath": "res://components/actors/instances/units/mcv/animations"
+}
