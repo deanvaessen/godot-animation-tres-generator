@@ -1,3 +1,16 @@
 node_modules
 input
 output
+
+.env
+config/*
+!config/config.json.dist
+!config/config.d.ts
+!config/index.ts
+
+./volumes/
+
+docker-compose.override.yml
+
+#Misc
+.DS_Store

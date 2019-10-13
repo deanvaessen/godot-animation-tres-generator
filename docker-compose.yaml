@@ -1,0 +1,16 @@
+version: "2.3"
+
+services:
+  app:
+    build:
+      context : .
+      args :
+        - env=${NODE_ENV}
+    image: "keymetrics/pm2:10-alpine"
+    command: npm run ${NODE_ENV}
+    working_dir: /usr/app
+    volumes:
+      - ./sources/app:/usr/app
+      - ./config/:/usr/app/config
+    environment:
+      - NODE_ENV=${NODE_ENV}

@@ -1,0 +1,21 @@
+{
+    "presets": [
+        "@babel/env",
+        "@babel/preset-typescript"
+    ],
+    /*
+    "extensions": [
+        ".ts",
+        ".js"
+    ],
+    */
+    "plugins": [
+        [
+            "@babel/plugin-proposal-class-properties",
+            {
+                "loose": false
+            }
+        ],
+        "@babel/plugin-proposal-object-rest-spread",
+    ]
+}

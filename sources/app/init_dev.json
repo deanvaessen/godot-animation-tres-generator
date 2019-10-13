@@ -1,0 +1,25 @@
+{
+  "apps": [
+    {
+      "name": "dev",
+      "script": "ts-node",
+      "args": "initDependencies.js",
+      "watch": [
+        "./"
+      ],
+      "watch_options": {
+        "usePolling": true
+      },
+      "min_uptime": 20000,
+      "max_restarts": 2,
+      "restart_delay": 1500,
+      "ignore_watch": [
+        "node_modules",
+        "public",
+        "input",
+        "output"
+      ],
+      "log_date_format": "YYYY-MM-DD HH:mm Z"
+    }
+  ]
+}

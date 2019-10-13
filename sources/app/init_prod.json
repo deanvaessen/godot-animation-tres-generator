@@ -1,0 +1,10 @@
+{
+  "apps": [
+    {
+      "name": "prod",
+      "script": "ts-node",
+      "args": "initDependencies.js",
+      "log_date_format": "YYYY-MM-DD HH:mm Z"
+    }
+  ]
+}
