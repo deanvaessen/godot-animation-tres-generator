@@ -36,35 +36,49 @@ export class ProducerService implements IProducerService {
     public produce = async ( path : string ) : Promise<void> => {
         const job : IJob = await this.getJob( path );
 
-        this.runJob( path, job );
+        this.runJob( job );
     }
 
-    private runJob = ( path : string, job : IJob ) : void => {
+    private runJob = async ( job : IJob ) : Promise<void> => {
         let { output_frames, godot_res_path, output_tres, input_folder, animations } = job;
         const { input, output } = this._config;
 
         // Make absolute
         input_folder = `${input}/${input_folder}`;
         output_tres = `${output}/${output_tres}`;
+        output_frames = `${output}/${output_frames}`;
 
         const parser = this._dependencyContainer.resolve<ParserService>( ParserService );
         const generator = this._dependencyContainer.resolve<GeneratorService>( GeneratorService );
 
-        this.removeTres( output_tres )
-            .then( () : Promise<IIndex> => parser.buildIndex( input_folder ) )
-            .then( ( index : IIndex ) : void => generator.generateTres( index, godot_res_path, output_tres ),  )
-            //@TODO: copy the images over, remove old images
-            .then( () : void => console.log( "'t was a pleasure, good chap!" ) )
-            .catch( ( err : Error ) : void => console.warn( err ) );
+        try {
+            await this.removeTres( output_tres );
+            const index = await parser.buildIndex( input_folder );
+            const { summary } = index;
+            await generator.generateTres( index, godot_res_path, output_tres );
+
+            // Copy the animations to godot
+            for ( const animation of summary ) {
+                const { name, path } = animation;
+
+                this.mirrorFolder( path, `${output_frames}/${name}` );
+            }
+
+            console.log( "'t was a pleasure, good chap!" );
+        } catch( err ) {
+            console.warn( err );
+        }
     }
 
     private removeTres = ( path : string ) : Promise<void> => {
-        return this._fs.remove( path );
 
-        /*
-        return this._fs.ensureDir( path )
-            .then( () : Promise<void> => this._fs.remove( path ) );
-        */
+        return this._fs.remove( path );
+    }
+
+    private mirrorFolder = ( master : string, slave : string ) : Promise<void> => {
+
+        return this._fs.remove( slave )
+            .then( () : Promise<void> => this._fs.copy( master, slave ) );
     }
 
     private getJob = ( path : string ) : Promise<IJob> => {

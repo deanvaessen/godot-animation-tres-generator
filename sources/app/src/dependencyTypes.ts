@@ -10,6 +10,7 @@ let DEPS = {
     Path : Symbol( "Path" ),
     Klaw : Symbol( "Klaw" ),
     Chokidar : Symbol( "Chokidar" ),
+    Ncp : Symbol( "Ncp" ),
     Through2 : Symbol( "Through2" )
 };
 
